@@ -1,0 +1,18 @@
+all:
+  children:
+    postgresql:
+      children:
+        primary:
+          hosts:
+            postgresql_primary:
+              ansible_host: "{{ primary_ip }}"
+        replicas:
+          hosts:
+            postgresql_replica_1:
+              ansible_host: "{{ replica_1_ip }}"
+            postgresql_replica_2:
+              ansible_host: "{{ replica_2_ip }}"
+      vars:
+        ansible_user: ubuntu
+        ansible_ssh_private_key_file: "{{ ssh_private_key_path }}"
+        ansible_python_interpreter: /usr/bin/python3

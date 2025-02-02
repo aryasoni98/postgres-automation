@@ -1,0 +1,33 @@
+---
+- name: Add PostgreSQL repository
+  apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    state: present
+
+- name: Add PostgreSQL signing key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Install PostgreSQL
+  apt:
+    name:
+      - "postgresql-{{ postgresql_version }}"
+      - "postgresql-contrib-{{ postgresql_version }}"
+    state: present
+    update_cache: yes
+
+- name: Configure PostgreSQL
+  template:
+    src: postgresql.conf.j2
+    dest: "/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf"
+  notify: restart postgresql
+
+- name: Configure pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: "/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf"
+  notify: restart postgresql
+
+- name: Include role-specific tasks
+  include_tasks: "{{ postgresql_role }}.yml"

@@ -1,0 +1,18 @@
+---
+- name: Configure PostgreSQL Primary
+  hosts: primary
+  become: yes
+  roles:
+    - common
+    - role: postgresql
+      vars:
+        postgresql_role: primary
+
+- name: Configure PostgreSQL Replicas
+  hosts: replicas
+  become: yes
+  roles:
+    - common
+    - role: postgresql
+      vars:
+        postgresql_role: replica

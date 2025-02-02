@@ -1,0 +1,19 @@
+data "template_file" "postgresql_conf" {
+  template = file("${path.module}/templates/postgresql.conf.tpl")
+
+  vars = {
+    max_connections = var.max_connections
+    shared_buffers = var.shared_buffers
+    wal_level = "replica"
+    max_wal_senders = 10
+    max_replication_slots = 10
+  }
+}
+
+data "template_file" "pg_hba_conf" {
+  template = file("${path.module}/templates/pg_hba.conf.tpl")
+
+  vars = {
+    vpc_cidr = data.aws_vpc.selected.cidr_block
+  }
+}
